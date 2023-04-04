@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}"> -->
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800&display=swap" rel="stylesheet">
+
+    <title>SmartBot</title>
+</head>
+
+<body class="h-full w-full">
+    <div class="flex justify-evenly items-center  h-[100%]">
+        <div class="flex flex-col h-[100%] w-[60%] justify-center items-center">
+            <div class="font-extrabold flex justify-center items-center text-white text-7xl">
+                <h1 class="header-name">SmartBot</h1>
+            </div>
+            <div class="gif flex justify-center items-center" onclick="func()">
+                <!-- <img src="{{url_for('static', filename='talking-talk.gif')}}" class="h-[70%] w-full"> -->
+                <img src="../static/robot.gif" class="h-[70%] w-full">
+            </div>
+        </div>
+        <div class="flex flex-col h-[100%] w-[60%] justify-center items-center">
+            <div class="flex flex-col justify-center h-full w-full">
+                <div id="intro-section" class="flex flex-col justify-center css-typing">
+                    <p class="text-justify text-7xl border-none m-4">Hi There!</p>
+                    <p class="text-justify text-7xl border-none m-4">Ask me something</p>
+                    <!-- <p class="text-justify text-7xl border-none m-4">sample intro asdeweffwojf</p> -->
+                </div>
+                <div id="chat-section" class="flex flex-row justify-evenly items-center">
+                    <div class="m-2 p-4 ">
+                        <button class="kave-btn " id="clear-button">
+                            <span class="kave-line"></span>
+                            Clear
+                        </button>
+                    </div>
+                    <div class="w-full m-2">
+                        <input class="form-control w-full" style="background-color: rgba(0, 214, 252, 0.555);color: black;"
+                            type="text" name="question" id="question">
+                    </div>
+                    <div class="m-2 p-4 ">
+                        <button class="kave-btn " id="submit-button">
+                            <span class="kave-line"></span>
+                            Send
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div class="">
+                        <div class="">
+                            <p id="response" class="text-3xl text-white"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <script src="/static/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#submit-button").on("click", function () {
+                $('#chat-section').addClass('absolute w-[50%] top-28 fixed');
+                $('#intro-section').addClass('invisible');
+            });
+        });
+        $(document).ready(function () {
+            $("#clear-button").on("click", function () {
+                location.reload();
+            });
+        });
+        var isTrue = true;
+        function func() {
+            if (isTrue) {
+                document.querySelector('.still').style.visibility = "hidden";
+                isTrue = !isTrue;
+            }
+            else {
+                document.querySelector('.still').style.visibility = "visible";
+                isTrue = !isTrue;
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+    <script>
+        jQuery(document).ready(function () {
+            $("#submit-button").click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/chatbot",
+                    data: {
+                        question: $("#question").val()
+                    },
+                    success: function (result) {
+                        console.log(result.response)
+                        $("#response").prepend("<br><img src='../static/user.png' style='display:inline-block;margin:10px;width:40px;height:40px'></img> " + $("#question").val() + "<br><img src='../static/robot.png' style='display:inline-block;margin:10px;width:40px;height:40px'></img>" + result.response.response )
+                        $("#response").addClass("text-white text-2xl")
+                        $("#question").val("")
+                    },
+                    error: function (result) {
+                        alert('error');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        var input = document.getElementById("question");
+
+        // Execute a function when the user presses a key on the keyboard
+        input.addEventListener("keypress", function (event) {
+            // If the user presses the "Enter" key on the keyboard
+            if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                document.getElementById("submit-button").click();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
